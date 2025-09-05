@@ -41,6 +41,12 @@ O projeto utiliza uma classe **`SmartForm`** que gerencia toda a lógica de vali
 
 ---
 
+## Interface
+
+<img width="1401" height="883" alt="image" src="https://github.com/user-attachments/assets/282c770e-8dc8-4bd9-903d-6666d6425446" />
+
+---
+
 ## 💻 Instalação e Uso
 
 1. **Clone o repositório**:

@@ -1,0 +1,41 @@
+/* ===========================================
+   ARQUIVO PRINCIPAL - IMPORTAÇÕES
+   =========================================== */
+
+
+/* 1º - Definir */
+@import url('variables.css');
+/* 2º - Limpar */
+@import url('reset.css');
+/* 3º - Estrutura */
+@import url('layout.css');
+/* 4º - Componentes */
+@import url('components.css');
+
+/* ESTILOS ESPECÍFICOS DO PROJETO */
+
+/* ===========================================
+    CABECALHO PRINCIPAL
+=========================================== */
+
+#cabecalho-principal {
+   background-color: var(--bg-light);
+   box-shadow: var(--shadow);
+}
+
+.logo-cabecalho {
+   color: var(--text-dark);
+}
+
+.logo-content {
+   font-weight: var(--font-weight-medium);
+}
+
+/* ===========================================
+    RODAPÉ
+=========================================== */
+#rodape {
+   background-color: var(--bg-dark);
+   color: var(--text-light);
+   box-shadow: var(--shadow);
+}

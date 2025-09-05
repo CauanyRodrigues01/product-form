@@ -1,0 +1,57 @@
+/* ===========================================
+   DESIGN TOKENS OTIMIZADOS
+   =========================================== */
+:root {
+  /* Cores principais */
+  --primary-color: #445DE9;
+  --secondary-color: #35464E;
+  --accent-color: #667eea;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+
+  /* Cores de bordas */
+  --border-dark: #667eea;
+  --border-light: #E5D9CE;
+
+  /* Cores de texto */
+  --text-dark: #445DE9;
+  --text-light: #ffffff;
+  --text-success: #d1fae5;
+
+  /* Cores de fundo */
+  --bg-light: #F5EDE3;
+  --bg-dark: #445DE9;
+  --bg-success: #d1fae5;
+
+  /* Tipografia */
+  --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+  /* Tamanhos de fonte */
+  --text-xs: 0.5rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.5rem;
+  --text-xl: 2.5rem;
+
+  /* Pesos de fonte */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+
+  /* Espaçamentos */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 2.5rem;
+
+  /* Border radius */
+  --radius: 0.5rem;
+  --radius-lg: 1rem;
+
+  /* Sombras */
+  --shadow: 0 0 20px 0 rgba(0, 0, 0, 0.25);
+
+  /* Gradiente */
+  --gradient: linear-gradient(135deg, var(--primary-color) 0%, #730e71 100%);
+}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cadastro de produtos no ecommerce">
+  <meta name="keywords" content="cadastro, ecommerce">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="Cadastro de produtos | Ecommerce">
+  <meta property="og:description" content="Cadastre seus produtos de forma fácil e rápida em nosso ecommerce.">
+  <meta property="og:type" content="website">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <link rel="icon" type="image/x-icon" href="assets/img/logo.png">
+
+  <title>Cadastro de produtos | Ecommerce</title>
+
+</head>
+
+<body>
+
+  <!-- Cabeçalho-->
+  <header id="cabecalho-principal">
+    <div class="container">
+      <div class="cabecalho-container">
+
+        <div class="logo-cabecalho">
+          <img src="assets/img/logo.png" alt="Logo do ecommerce" class="logo-cabecalho-img">
+          <div class="logo-content">
+            <p>ONLINE SHOP</p>
+            <small>E-COMMERCE</small>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main id="cadastro-produtos">
+    <div class="container">
+      <div class="form-container wide">
+        <div class="form-header">
+          <h2>Cadastro de produtos</h2>
+          <p>Preencha os campos abaixo para cadastrar um novo produto no e-commerce.</p>
+        </div>
+
+        <form class="smart-form" id="registerForm" novalidate>
+
+          <div class="success-message" id="successMessage">
+            <i class="bi bi-check-lg"></i> Produto cadastrado comsucesso!
+          </div>
+
+          <div class="field-group">
+            <label for="productName">Nome do Produto<span class="required" aria-label="obrigatório">*</span></label>
+            <input type="text" name="productName" id="productName" required="" maxlength="100"
+              placeholder="Digite o nome do produto" aria-describedby="productName-error">
+            <div class="error-message" id="productName-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="productCode">Código do Produto<span class="required" aria-label="obrigatório">*</span></label>
+            <input type="text" name="productCode" id="productCode" required="" maxlength="100"
+              placeholder="Digite o código do produto" aria-describedby="productCode-error">
+            <div class="error-message" id="productCode-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="category">Categoria<span class="required" aria-label="obrigatório">*</span></label>
+            <select name="category" id="category" required="" aria-describedby="category-error">
+              <option value="" disabled selected>Selecione uma categoria</option>
+              <option value="eletronicos">Eletrônicos</option>
+              <option value="roupas">Roupas</option>
+              <option value="acessorios">Acessórios</option>
+              <option value="papelaria">Papelaria</option>
+              <option value="casa">Casa e cozinha</option>
+              <option value="outros">Outros</option>
+            </select>
+            <div class="error-message" id="category-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="description">Descrição<span class="required" aria-label="obrigatório">*</span></label>
+            <textarea name="description" id="description" required="" rows="5"
+              placeholder="Digite a descrição do produto aqui" aria-describedby="description-error"></textarea>
+            <div class="error-message" id="description-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="price">Preço<span class="required" aria-label="obrigatório">*</span></label>
+            <input type="number" name="price" id="price" required="" min="0" step="0.01"
+              placeholder="Digite o preço do produto" aria-describedby="price-error">
+            <div class="error-message" id="price-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="stockQuantity">Quantidade em Estoque<span class="required"
+                aria-label="obrigatório">*</span></label>
+            <input type="number" name="stockQuantity" id="stockQuantity" required="" min="0"
+              placeholder="Digite a quantidade em estoque" aria-describedby="stockQuantity-error">
+            <div class="error-message" id="stockQuantity-error" role="alert"></div>
+            <div class="error-message" id="price-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="brand">Marca<span class="required" aria-label="obrigatório">*</span></label>
+            <input type="text" name="brand" id="brand" required="" maxlength="100"
+              placeholder="Digite a marca do produto" aria-describedby="brand-error">
+            <div class="error-message" id="brand-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="expirationDate">Data de Validade<span class="required" aria-label="obrigatório">*</span></label>
+            <input type="date" name="expirationDate" id="expirationDate" required=""
+              aria-describedby="expirationDate-error">
+            <div class="error-message" id="expirationDate-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="weight">Peso (em kg)<span class="required" aria-label="obrigatório">*</span></label>
+            <input type="number" name="weight" id="weight" required="" min="0" step="0.01"
+              placeholder="Digite o peso do produto" aria-describedby="weight-error">
+            <div class="error-message" id="weight-error" role="alert"></div>
+          </div>
+
+          <div class="field-group">
+            <label for="color">Cor<span class="required" aria-label="obrigatório">*</span></label>
+            <input type="text" name="color" id="color" required="" maxlength="100"
+              placeholder="Digite a cor do produto" aria-describedby="color-error">
+            <div class="error-message" id="color-error" role="alert"></div>
+          </div>
+
+          <div class="form-buttons center">
+            <button class="btn btn-primary" type="submit">Adicionar produto</button>
+            <button class="btn btn-secondary" type="button" id="clearBtn">Limpar formulário</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer id="rodape">
+    <div class="container">
+      <div class="rodape-container">
+        <p>&copy; 2025 Ecommerce. Todos os direitos reservados.</p>
+        <p>CNPJ: 12.345.678/0001-90 | Desenvolvido com ❤️ por <a
+            href="https://www.linkedin.com/in/cauany-rodrigues-78700b193/">Cauany Rodrigues</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+
+</body>
+
+</html>

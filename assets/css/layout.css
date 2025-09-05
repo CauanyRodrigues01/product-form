@@ -1,0 +1,65 @@
+/* ===========================================
+   LAYOUT GERAL
+   =========================================== */
+
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-xs) var(--space-md);
+}
+
+@media (max-width: 768px) {
+
+    .container {
+        padding: var(--space-sm);
+    }
+
+}
+
+/* ===========================================
+    CABECALHO PRINCIPAL
+=========================================== */
+
+#cabecalho-principal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.logo-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.logo-cabecalho-img {
+    width: 90px;
+    max-width: 90px;
+    height: auto;
+}
+
+/* ===========================================
+    SEÇÃO CADASTRO DE PRODUTOS
+=========================================== */
+
+#cadastro-produtos {
+    margin-top: 98px;
+    margin-bottom: var(--space-md);
+}
+
+/* ===========================================
+    SEÇÃO RODAPE
+=========================================== */
+
+.rodape-container {
+    text-align: center;
+    padding: var(--space-sm) 0;
+}
+
+.rodape-container a {
+    text-decoration: underline;
+}

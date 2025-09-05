@@ -40,10 +40,10 @@ class SmartForm {
 
     // Listeners para validação em tempo real dos campos
     this.form.querySelectorAll("input, select, textarea").forEach((field) => {
-        field.addEventListener("blur", () => this.validateField(field));
-        field.addEventListener("input", () => this.validateField(field));
-        field.addEventListener("change", () => this.validateField(field));
-      });
+      field.addEventListener("blur", () => this.validateField(field));
+      field.addEventListener("input", () => this.validateField(field));
+      field.addEventListener("change", () => this.validateField(field));
+    });
 
     // Listener para o botão de limpar formulário
     const clearBtn = this.form.querySelector("#clearBtn");
@@ -147,24 +147,27 @@ class SmartForm {
         setTimeout(() => (successMessage.style.display = "none"), 5000);
       }
       this.form.reset(); // limpa o formulário
-      this.form.querySelectorAll(".is-invalid").forEach((field) => field.classList.remove("is-invalid"));
+      this.form
+        .querySelectorAll(".is-invalid")
+        .forEach((field) => field.classList.remove("is-invalid"));
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
       console.log("Formulário enviado com sucesso!");
-
     }, 1500);
   }
 
   // Manipula a limpeza do formulário
   handleClear() {
-
     if (confirm("Tem certeza que deseja limpar todos os campos?")) {
       this.form.reset();
-      this.form.querySelectorAll(".error-message").forEach((error) => (error.style.display = "none"));
-      this.form.querySelectorAll(".is-invalid").forEach((field) => field.classList.remove("is-invalid"));
+      this.form
+        .querySelectorAll(".error-message")
+        .forEach((error) => (error.style.display = "none"));
+      this.form
+        .querySelectorAll(".is-invalid")
+        .forEach((field) => field.classList.remove("is-invalid"));
     }
   }
-
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -196,6 +199,4 @@ document.addEventListener("DOMContentLoaded", () => {
     (value) => parseFloat(value) > 0,
     "O preço deve ser um valor maior que zero."
   );
-
-
-})
+});

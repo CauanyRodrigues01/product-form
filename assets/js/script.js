@@ -90,6 +90,114 @@ class SmartForm {
     // Remove a mensagem de erro se o campo for válido
     this.hideError(field);
     return true;
-    
   }
+
+  // Obtém a mensagem de validação padrão do navegador
+  getValidationMessage(field) {
+    const validity = field.validity;
+    if (validity.valueMissing) {
+      return "Este campo é obrigatório.";
+    } else if (validity.typeMismatch) {
+      return "Por favor, insira um formato válido.";
+    } else if (validity.tooShort) {
+      return `Mínimo de ${field.minLength} caracteres.`;
+    } else if (validity.tooLong) {
+      return `Máximo de ${field.maxLength} caracteres.`;
+    } else if (validity.rangeUnderflow) {
+      return `O valor deve ser no mínimo ${field.min}.`;
+    } else if (validity.rangeOverflow) {
+      return `O valor deve ser no máximo ${field.max}.`;
+    }
+    return "Por favor, corrija este campo.";
+  }
+
+  // Exibe a mensagem de erro para um campo
+  showError(field, message) {
+    const errorElement = document.getElementById(field.id + "-error");
+    if (errorElement) {
+      errorElement.textContent = message;
+      errorElement.style.display = "block";
+      field.setAttribute("aria-invalid", "true");
+      field.setAttribute("aria-describedby", field.id + "-error");
+    }
+    field.classList.add("is-invalid");
+  }
+
+  // Oculta a mensagem de erro para um campo
+  hideError(field) {
+    const errorElement = document.getElementById(field.id + "-error");
+    if (errorElement) {
+      field.textContent = "";
+      errorElement.style.display = "none";
+      field.removeAttribute("aria-invalid");
+      field.removeAttribute("aria-describedby");
+    }
+    field.classList.remove("is-invalid");
+  }
+
+  // Manipula a submissão do formulário
+  handleSubmit() {
+    const submitBtn = this.form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Adicionando produto...";
+
+    // Simula um processo de envio
+    setTimeout(() => {
+      const successMessage = this.form.querySelector("#successMessage");
+      if (successMessage) {
+        successMessage.style.display = "block";
+        setTimeout(() => (successMessage.style.display = "none"), 5000);
+      }
+      this.form.reset(); // limpa o formulário
+      this.form.querySelectorAll(".is-invalid").forEach((field) => field.classList.remove("is-invalid"));
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      console.log("Formulário enviado com sucesso!");
+
+    }, 1500);
+  }
+
+  // Manipula a limpeza do formulário
+  handleClear() {
+
+    if (confirm("Tem certeza que deseja limpar todos os campos?")) {
+      this.form.reset();
+      this.form.querySelectorAll(".error-message").forEach((error) => (error.style.display = "none"));
+      this.form.querySelectorAll(".is-invalid").forEach((field) => field.classList.remove("is-invalid"));
+    }
+  }
+
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const registerForm = new SmartForm("registerForm");
+
+  // Validação customizada do Código do Produto (ex: PROD-12345)
+  registerForm.addValidator(
+    "productCode",
+    (value) => {
+      const codeRegex = /^[A-Z]{3,4}-\d+$/; // Ex: PROD-12345
+      return codeRegex.test(value);
+    },
+    "O código deve começar com 3 ou 4 letras maiúsculas e terminar com números (ex: PROD-123)."
+  );
+
+  // Validação Customizada da Data de Validade (não pode ser no passado)
+  registerForm.addValidator(
+    "expirationDate",
+    (value) => {
+      const today = new Date().toISOString().split("T")[0];
+      return value >= today;
+    },
+    "A data de validade não pode ser anterior à data de hoje."
+  );
+
+  // Validação Customizada do Preço (deve ser maior que zero)
+  registerForm.addValidator(
+    "price",
+    (value) => parseFloat(value) > 0,
+    "O preço deve ser um valor maior que zero."
+  );
+
+})

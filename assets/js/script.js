@@ -39,9 +39,7 @@ class SmartForm {
     });
 
     // Listeners para validação em tempo real dos campos
-    this.form
-      .querySelectorAll("input, select, textarea, checkbox")
-      .forEach((field) => {
+    this.form.querySelectorAll("input, select, textarea").forEach((field) => {
         field.addEventListener("blur", () => this.validateField(field));
         field.addEventListener("input", () => this.validateField(field));
         field.addEventListener("change", () => this.validateField(field));
@@ -127,7 +125,6 @@ class SmartForm {
   hideError(field) {
     const errorElement = document.getElementById(field.id + "-error");
     if (errorElement) {
-      field.textContent = "";
       errorElement.style.display = "none";
       field.removeAttribute("aria-invalid");
       field.removeAttribute("aria-describedby");
@@ -199,5 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
     (value) => parseFloat(value) > 0,
     "O preço deve ser um valor maior que zero."
   );
+
 
 })

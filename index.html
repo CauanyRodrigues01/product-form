@@ -53,22 +53,16 @@
 
         <form class="smart-form" id="registerForm" novalidate>
 
-          <div class="success-message" id="successMessage">
-            <i class="bi bi-check-lg"></i> Produto cadastrado comsucesso!
-          </div>
-
           <div class="field-group">
-            <label for="productName">Nome do Produto<span class="required" aria-label="obrigatório">*</span></label>
+            <label for="productName">Nome do produto<span class="required" aria-label="obrigatório">*</span></label>
             <input type="text" name="productName" id="productName" required="" maxlength="100"
               placeholder="Digite o nome do produto" aria-describedby="productName-error">
-            <div class="error-message" id="productName-error" role="alert"></div>
           </div>
 
           <div class="field-group">
             <label for="productCode">Código do Produto<span class="required" aria-label="obrigatório">*</span></label>
             <input type="text" name="productCode" id="productCode" required="" maxlength="100"
               placeholder="Digite o código do produto" aria-describedby="productCode-error">
-            <div class="error-message" id="productCode-error" role="alert"></div>
           </div>
 
           <div class="field-group">
@@ -82,58 +76,49 @@
               <option value="casa">Casa e cozinha</option>
               <option value="outros">Outros</option>
             </select>
-            <div class="error-message" id="category-error" role="alert"></div>
           </div>
 
           <div class="field-group">
             <label for="description">Descrição<span class="required" aria-label="obrigatório">*</span></label>
             <textarea name="description" id="description" required="" rows="5"
               placeholder="Digite a descrição do produto aqui" aria-describedby="description-error"></textarea>
-            <div class="error-message" id="description-error" role="alert"></div>
           </div>
 
           <div class="field-group">
             <label for="price">Preço<span class="required" aria-label="obrigatório">*</span></label>
             <input type="number" name="price" id="price" required="" min="0" step="0.01"
               placeholder="Digite o preço do produto" aria-describedby="price-error">
-            <div class="error-message" id="price-error" role="alert"></div>
           </div>
 
           <div class="field-group">
-            <label for="stockQuantity">Quantidade em Estoque<span class="required"
+            <label for="stockQuantity">Quantidade em estoque<span class="required"
                 aria-label="obrigatório">*</span></label>
             <input type="number" name="stockQuantity" id="stockQuantity" required="" min="0"
               placeholder="Digite a quantidade em estoque" aria-describedby="stockQuantity-error">
-            <div class="error-message" id="stockQuantity-error" role="alert"></div>
-            <div class="error-message" id="price-error" role="alert"></div>
           </div>
 
           <div class="field-group">
             <label for="brand">Marca<span class="required" aria-label="obrigatório">*</span></label>
             <input type="text" name="brand" id="brand" required="" maxlength="100"
               placeholder="Digite a marca do produto" aria-describedby="brand-error">
-            <div class="error-message" id="brand-error" role="alert"></div>
           </div>
 
           <div class="field-group">
-            <label for="expirationDate">Data de Validade<span class="required" aria-label="obrigatório">*</span></label>
+            <label for="expirationDate">Data de validade<span class="required" aria-label="obrigatório">*</span></label>
             <input type="date" name="expirationDate" id="expirationDate" required=""
               aria-describedby="expirationDate-error">
-            <div class="error-message" id="expirationDate-error" role="alert"></div>
           </div>
 
           <div class="field-group">
             <label for="weight">Peso (em kg)<span class="required" aria-label="obrigatório">*</span></label>
             <input type="number" name="weight" id="weight" required="" min="0" step="0.01"
               placeholder="Digite o peso do produto" aria-describedby="weight-error">
-            <div class="error-message" id="weight-error" role="alert"></div>
           </div>
 
           <div class="field-group">
             <label for="color">Cor<span class="required" aria-label="obrigatório">*</span></label>
             <input type="text" name="color" id="color" required="" maxlength="100"
               placeholder="Digite a cor do produto" aria-describedby="color-error">
-            <div class="error-message" id="color-error" role="alert"></div>
           </div>
 
           <div class="form-buttons center">

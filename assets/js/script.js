@@ -1,202 +1,298 @@
 /* ===========================================
-    FORMULÁRIOS
+    FORMULÁRIO
+=========================================== */
+
+/* ===========================================
+    SMARTFORM - VERSÃO SIMPLIFICADA E OTIMIZADA
 =========================================== */
 
 class SmartForm {
-  constructor(formId) {
+  constructor(formId, options = {}) {
     this.form = document.getElementById(formId);
     if (!this.form) {
       throw new Error(`Formulário com ID "${formId}" não encontrado.`);
     }
-    this.validators = {}; // Inicializa o objeto de validadores
+    this.config = {
+      validateOnBlur: true,
+      validateOnInput: true,
+      showMessages: true,
+      ...options,
+    };
+    this.fieldRules = {};
+    this.isSubmitting = false;
     this.init();
   }
 
-  // Inicializa o formulário
   init() {
-    this.form.setAttribute("novalidate", "true"); // Desativa a validação padrão do navegador
+    this.form.setAttribute("novalidate", "true");
     this.setupEventListeners();
+    this.createErrorElements();
   }
 
-  // Adiciona um validador personalizado para um campo específico
-  addValidator(fieldName, validatorFunction, errorMessage) {
-    this.validators[fieldName] = {
-      validate: validatorFunction,
-      message: errorMessage,
-    };
-  }
-
-  // Configura os event listeners para o formulário e seus campos
   setupEventListeners() {
-    // Listener para o evento de submissão do formulário
     this.form.addEventListener("submit", (e) => {
       e.preventDefault();
-      if (this.validateForm()) {
-        this.handleSubmit();
-      } else {
-        console.log("Formulário inválido.");
+      this.handleSubmit();
+    });
+    this.form.querySelectorAll("input, select, textarea").forEach((field) => {
+      if (this.config.validateOnBlur) {
+        field.addEventListener("blur", () => this.validateField(field, true));
+      }
+      if (this.config.validateOnInput) {
+        field.addEventListener("input", () => this.validateField(field));
       }
     });
-
-    // Listeners para validação em tempo real dos campos
-    this.form.querySelectorAll("input, select, textarea").forEach((field) => {
-      field.addEventListener("blur", () => this.validateField(field));
-      field.addEventListener("input", () => this.validateField(field));
-      field.addEventListener("change", () => this.validateField(field));
-    });
-
-    // Listener para o botão de limpar formulário
-    const clearBtn = this.form.querySelector("#clearBtn");
+    const clearBtn = this.form.querySelector("#clearBtn, [data-clear]");
     if (clearBtn) {
-      clearBtn.addEventListener("click", () => this.handleClear());
+      clearBtn.addEventListener("click", () => this.clearForm());
     }
   }
 
-  // Valida todo o formulário
+  createErrorElements() {
+    this.form.querySelectorAll("input, select, textarea").forEach((field) => {
+      if (!field.id)
+        field.id = `field-${Math.random().toString(36).substring(2, 7)}`;
+      const errorId = `${field.id}-error`;
+      if (!document.getElementById(errorId)) {
+        const errorElement = document.createElement("div");
+        errorElement.id = errorId;
+        errorElement.className = "error-message";
+        field.parentNode.insertBefore(errorElement, field.nextSibling);
+      }
+    });
+  }
+  addFieldRule(fieldName, options = {}) {
+    this.fieldRules[fieldName] = {
+      cleaner: options.cleaner || null,
+      validator: options.validator || null,
+      message: options.message || "Campo inválido.",
+    };
+    return this;
+  }
+
   validateForm() {
     let isValid = true;
     this.form.querySelectorAll("input, select, textarea").forEach((field) => {
-      // Aplica a validação em todos os campos
-      if (!this.validateField(field)) {
+      if (!this.validateField(field, true)) {
         isValid = false;
       }
     });
     return isValid;
   }
 
-  // Valida um campo específico
-  validateField(field) {
-    const isNativeValid = field.checkValidity(); // Verifica se o campo atende às regras do HTML5
-    const customValidator = this.validators[field.name];
-    let customMessage = "";
-
-    // Primeiro, verifica a validação nativa do HTML5
-    if (!isNativeValid) {
-      customMessage = this.getValidationMessage(field); // Obtém a mensagem de erro padrão
+  validateField(field, performClean = false) {
+    if (performClean) {
+      this.cleanField(field);
     }
-    // Em seguida, verifica a validação customizada
-    else if (customValidator && !customValidator.validate(field.value, field)) {
-      customMessage = customValidator.message; // Usa a mensagem de erro personalizada
-    }
+    const fieldRule = this.fieldRules[field.name];
+    let message = "";
+    let isValid = true;
 
-    // Exibe a mensagem de erro, se houver
-    if (customMessage) {
-      this.showError(field, customMessage);
-      return false;
+    if (!field.checkValidity()) {
+      message = this.getValidationMessage(field);
+      isValid = false;
+    } else if (fieldRule?.validator && !fieldRule.validator(field.value)) {
+      message = fieldRule.message;
+      isValid = false;
     }
 
-    // Remove a mensagem de erro se o campo for válido
-    this.hideError(field);
-    return true;
+    if (isValid) {
+      this.hideError(field);
+    } else {
+      this.showError(field, message);
+    }
+    return isValid;
   }
 
-  // Obtém a mensagem de validação padrão do navegador
+  cleanField(field) {
+    const fieldRule = this.fieldRules[field.name];
+    const cleaner = fieldRule?.cleaner || this.getGenericCleaner(field);
+    if (cleaner) {
+      field.value = cleaner(field.value);
+    }
+  }
+
+  getGenericCleaner(field) {
+    const cleaners = {
+      email: (value) => value.toLowerCase().trim().replace(/\s+/g, ""),
+      tel: (value) => value.replace(/[^\d\s\-\(\)\+]/g, "").trim(),
+      number: (value) => value.replace(/[^\d\.\-]/g, "").trim(),
+      url: (value) => value.toLowerCase().trim(),
+      text: (value) => value.trim().replace(/\s+/g, " "),
+      textarea: (value) => value.trim().replace(/\s+/g, " "),
+    };
+    return (
+      cleaners[field.type] ||
+      cleaners[field.tagName.toLowerCase()] ||
+      ((value) => value.trim())
+    );
+  }
+
   getValidationMessage(field) {
     const validity = field.validity;
-    if (validity.valueMissing) {
-      return "Este campo é obrigatório.";
-    } else if (validity.typeMismatch) {
-      return "Por favor, insira um formato válido.";
-    } else if (validity.tooShort) {
-      return `Mínimo de ${field.minLength} caracteres.`;
-    } else if (validity.tooLong) {
-      return `Máximo de ${field.maxLength} caracteres.`;
-    } else if (validity.rangeUnderflow) {
-      return `O valor deve ser no mínimo ${field.min}.`;
-    } else if (validity.rangeOverflow) {
-      return `O valor deve ser no máximo ${field.max}.`;
+    if (validity.valueMissing) return "Este campo é obrigatório.";
+    if (validity.typeMismatch) {
+      if (field.type === "email") return "Digite um email válido.";
+      if (field.type === "url") return "Digite uma URL válida.";
+      return "Formato inválido.";
     }
-    return "Por favor, corrija este campo.";
+    if (validity.tooShort) return `Mínimo de ${field.minLength} caracteres.`;
+    if (validity.tooLong) return `Máximo de ${field.maxLength} caracteres.`;
+    if (validity.rangeUnderflow) return `Valor mínimo: ${field.min}.`;
+    if (validity.rangeOverflow) return `Valor máximo: ${field.max}.`;
+    if (validity.patternMismatch) return "Formato não aceito.";
+    return "Campo inválido.";
   }
 
-  // Exibe a mensagem de erro para um campo
   showError(field, message) {
-    const errorElement = document.getElementById(field.id + "-error");
+    if (!this.config.showMessages) return;
+    const errorElement = document.getElementById(`${field.id}-error`);
     if (errorElement) {
       errorElement.textContent = message;
       errorElement.style.display = "block";
-      field.setAttribute("aria-invalid", "true");
-      field.setAttribute("aria-describedby", field.id + "-error");
     }
     field.classList.add("is-invalid");
+    field.setAttribute("aria-invalid", "true");
   }
 
-  // Oculta a mensagem de erro para um campo
   hideError(field) {
-    const errorElement = document.getElementById(field.id + "-error");
+    const errorElement = document.getElementById(`${field.id}-error`);
     if (errorElement) {
       errorElement.style.display = "none";
-      field.removeAttribute("aria-invalid");
-      field.removeAttribute("aria-describedby");
     }
     field.classList.remove("is-invalid");
+    field.removeAttribute("aria-invalid");
   }
 
-  // Manipula a submissão do formulário
-  handleSubmit() {
-    const submitBtn = this.form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Adicionando produto...";
-
-    // Simula um processo de envio
-    setTimeout(() => {
-      const successMessage = this.form.querySelector("#successMessage");
-      if (successMessage) {
-        successMessage.style.display = "block";
-        setTimeout(() => (successMessage.style.display = "none"), 5000);
-      }
-      this.form.reset(); // limpa o formulário
-      this.form
-        .querySelectorAll(".is-invalid")
-        .forEach((field) => field.classList.remove("is-invalid"));
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalText;
-      console.log("Formulário enviado com sucesso!");
-    }, 1500);
-  }
-
-  // Manipula a limpeza do formulário
-  handleClear() {
-    if (confirm("Tem certeza que deseja limpar todos os campos?")) {
-      this.form.reset();
-      this.form
-        .querySelectorAll(".error-message")
-        .forEach((error) => (error.style.display = "none"));
-      this.form
-        .querySelectorAll(".is-invalid")
-        .forEach((field) => field.classList.remove("is-invalid"));
+  async handleSubmit() {
+    if (this.isSubmitting) return;
+    if (!this.validateForm()) {
+      this.focusFirstError();
+      return;
     }
+    this.isSubmitting = true;
+    const submitBtn = this.form.querySelector('button[type="submit"]');
+    const originalText = submitBtn?.textContent;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enviando...";
+    }
+    try {
+      if (this.config.onSubmit) {
+        await this.config.onSubmit(this.getFormData());
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+      this.showSuccess();
+      this.clearForm();
+    } catch (error) {
+      this.showError(null, `Erro: ${error.message}`);
+    } finally {
+      this.isSubmitting = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+  }
+
+  focusFirstError() {
+    const firstError = this.form.querySelector(".is-invalid");
+    if (firstError) {
+      firstError.focus();
+    }
+  }
+  showSuccess() {
+    if (!this.config.showMessages) return;
+    let successMsg = document.getElementById("form-success");
+    if (!successMsg) {
+      successMsg = document.createElement("div");
+      successMsg.id = "form-success";
+      successMsg.className = "success-message";
+      this.form.insertBefore(successMsg, this.form.firstChild);
+    }
+    successMsg.textContent = "Formulário enviado com sucesso!";
+    successMsg.style.display = "block";
+    setTimeout(() => (successMsg.style.display = "none"), 3000);
+  }
+  
+  clearForm() {
+    this.form.reset();
+    this.form.querySelectorAll(".error-message").forEach((error) => {
+      error.style.display = "none";
+    });
+    this.form.querySelectorAll(".is-invalid").forEach((field) => {
+      field.classList.remove("is-invalid");
+      field.removeAttribute("aria-invalid");
+    });
+  }
+
+  getFormData() {
+    const data = {};
+    new FormData(this.form).forEach((value, key) => (data[key] = value));
+    return data;
   }
 }
 
+// REGRAS DE VALIDAÇÃO E LIMPEZA CUSTOMIZADAS
+const FieldRules = {
+  // Nome do produto
+  productName: {
+    cleaner: (value) =>
+      value
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/\b\w/g, (l) => l.toUpperCase()),
+    validator: (value) => value.length >= 2,
+    message: "Nome deve ter pelo menos 2 caracteres.",
+  },
+
+  // Código de produto
+  productCode: {
+    cleaner: (value) => value.toUpperCase().replace(/[^A-Z0-9\-]/g, ""),
+    validator: (value) => /^[A-Z]{2,4}-?\d+$/.test(value),
+    message: "Formato: ABC-123 ou ABC123.",
+  },
+
+  // Preço do produto
+  price: {
+    cleaner: (value) => value.replace(/[^\d\,\.]/g, "").replace(",", "."),
+    validator: (value) => !isNaN(value) && parseFloat(value) > 0,
+    message: "Digite um preço válido maior que zero.",
+  },
+
+  // Data futura
+  futureDate: {
+    validator: (value) => {
+      if (!value) return false;
+      return new Date(value) >= new Date().setHours(0, 0, 0, 0);
+    },
+    message: "Data deve ser hoje ou futura.",
+  }
+
+};
+
+// INICIALIZAÇÃO DO FORMULÁRIO
 document.addEventListener("DOMContentLoaded", () => {
-  const registerForm = new SmartForm("registerForm");
+  const form = new SmartForm("registerForm", {
+    validateOnBlur: true,
+    validateOnInput: true,
+    showMessages: true,
+    onSubmit: async (data) => {
+      console.log("Dados do formulário:", data);
+      // Aqui se faria a requisição real
 
-  // Validação customizada do Código do Produto (ex: PROD-12345)
-  registerForm.addValidator(
-    "productCode",
-    (value) => {
-      const codeRegex = /^[A-Z]{3,4}-\d+$/; // Ex: PROD-12345
-      return codeRegex.test(value);
+      // atraso artificial para simular a requisição de rede
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // return fetch('/api/submit', { method: 'POST', body: JSON.stringify(data) });
     },
-    "O código deve começar com 3 ou 4 letras maiúsculas e terminar com números (ex: PROD-123)."
-  );
+  });
 
-  // Validação Customizada da Data de Validade (não pode ser no passado)
-  registerForm.addValidator(
-    "expirationDate",
-    (value) => {
-      const today = new Date().toISOString().split("T")[0];
-      return value >= today;
-    },
-    "A data de validade não pode ser anterior à data de hoje."
-  );
-
-  // Validação Customizada do Preço (deve ser maior que zero)
-  registerForm.addValidator(
-    "price",
-    (value) => parseFloat(value) > 0,
-    "O preço deve ser um valor maior que zero."
-  );
+  // Adiciona regras customizadas aos campos
+  form
+    .addFieldRule("productName", FieldRules.productName)
+    .addFieldRule("productCode", FieldRules.productCode)
+    .addFieldRule("price", FieldRules.price)
+    .addFieldRule("expirationDate", FieldRules.futureDate);
 });

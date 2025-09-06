@@ -288,23 +288,23 @@ const FieldRules = {
     cleaner: (value) =>
       value
         .trim()
-        .replace(/\s+/g, " ")
-        .replace(/\b\w/g, (l) => l.toUpperCase()),
-    validator: (value) => value.length >= 2,
+        .replace(/\s+/g, " ") // Remove espaços extras
+        .replace(/\b\w/g, (l) => l.toUpperCase()), // Capitaliza a primeira letra de cada palavra
+    validator: (value) => value.length >= 2,// Pelo menos 2 caracteres
     message: "Nome deve ter pelo menos 2 caracteres.",
   },
 
   // Código de produto
   productCode: {
-    cleaner: (value) => value.toUpperCase().replace(/[^A-Z0-9\-]/g, ""),
-    validator: (value) => /^[A-Z]{2,4}-?\d+$/.test(value),
+    cleaner: (value) => value.toUpperCase().replace(/[^A-Z0-9\-]/g, ""), // Apenas letras maiúsculas, números e hífen
+    validator: (value) => /^[A-Z]{2,4}-?\d+$/.test(value), // Formato ABC-123 ou ABC123
     message: "Formato: ABC-123 ou ABC123.",
   },
 
   // Preço do produto
   price: {
-    cleaner: (value) => value.replace(/[^\d\,\.]/g, "").replace(",", "."),
-    validator: (value) => !isNaN(value) && parseFloat(value) > 0,
+    cleaner: (value) => value.replace(/[^\d\,\.]/g, "").replace(",", "."), // Apenas números e ponto decimal
+    validator: (value) => !isNaN(value) && parseFloat(value) > 0, // Deve ser um número maior que zero
     message: "Digite um preço válido maior que zero.",
   },
 
@@ -313,7 +313,7 @@ const FieldRules = {
     validator: (value) => {
       if (!value) return false;
       return new Date(value) >= new Date().setHours(0, 0, 0, 0);
-    },
+    }, // Deve ser hoje ou futura
     message: "Data deve ser hoje ou futura.",
   },
 };
